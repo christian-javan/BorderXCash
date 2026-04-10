@@ -1,0 +1,162 @@
+server/
+├── api/                 # Endpoints HTTP (file-based routing)
+│   ├── auth/
+│   │   ├── customer/    # Login para clientes (Google)
+│   │   │   ├── google.post.ts
+│   │   │   └── callback.get.ts
+│   │   ├── admin/       # Login para administradores (email + password)
+│   │   │   ├── login.post.ts
+│   │   │   ├── logout.post.ts
+│   │   │   └── session.get.ts
+│   │   ├── cashier/              # Login para cajeros (email + password)
+│   │   │   ├── login.post.ts
+│   │   │   ├── logout.post.ts
+│   │   │   └── session.get.ts
+│   │   └── refresh.post.ts       # Refresh token general
+│   │
+│   ├── customers/                # Rutas para clientes
+│   │   ├── onboard.post.ts
+│   │   ├── me.get.ts
+│   │   ├── me.patch.ts
+│   │   └── [id].get.ts
+│   │
+│   ├── funding/                  # Depósitos desde EUA
+│   │   ├── create.post.ts
+│   │   ├── [folio].get.ts
+│   │   ├── confirm.post.ts       # Cajero confirma depósito
+│   │   └── list.get.ts
+│   │
+│   ├── wallet/                   # Wallet del cliente
+│   │   ├── balance.get.ts
+│   │   ├── history.get.ts
+│   │   └── transactions.get.ts
+│   │
+│   ├── spend/                    # Canjes en México
+│   │   ├── create.post.ts
+│   │   ├── [folio].get.ts
+│   │   ├── confirm.post.ts       # Aliado confirma entrega
+│   │   └── list.get.ts
+│   │
+│   ├── fx/                       # Tipo de cambio
+│   │   ├── current.get.ts
+│   │   └── update.post.ts        # Solo admins
+│   │
+│   ├── admin/                    # Panel administrativo
+│   │   ├── dashboard.get.ts
+│   │   ├── users.get.ts
+│   │   ├── funding/pending.get.ts
+│   │   └── spend/pending.get.ts
+│   │
+│   ├── cashier/                  # Rutas específicas para cajeros
+│   │   └── confirm-deposit.post.ts
+│   │
+│   ├── webhooks/
+│   │   ├── multiplica.post.ts
+│   │   ├── codi.post.ts
+│   │   └── stripe.post.ts
+│   │
+│   └── health.get.ts
+│
+├── middleware/                   # Middlewares
+│   ├── 01.auth.ts                # Autenticación general
+│   ├── 02.customer-auth.ts       # Solo clientes
+│   ├── 03.admin-auth.ts          # Solo admins
+│   ├── 04.cashier-auth.ts        # Solo cajeros
+│   ├── 05.kyc-required.ts
+│   ├── 06.membership-active.ts
+│   └── 07.rate-limit.ts
+│
+├── plugins/                      # Inicialización al arrancar Nitro
+│   ├── 01.database.ts
+│   ├── 02.auth.ts                # Configuración de autenticación
+│   └── 03.error-handler.ts
+│
+├── utils/                        # Utilidades
+│   ├── db.ts                     # Conexión a PostgreSQL (pg o postgres.js)
+│   ├── auth.ts                   # Helpers de JWT y verificación
+│   ├── validators.ts             # Zod schemas
+│   ├── security.ts               # Validación de webhooks, HMAC
+│   └── pagination.ts
+│
+├── domain/                       # Núcleo puro del negocio
+│   ├── entities/
+│   │   ├── Customer.ts
+│   │   ├── SystemUser.ts
+│   │   ├── CashierUser.ts
+│   │   ├── FundingEvent.ts
+│   │   ├── WalletMXN.ts
+│   │   ├── SpendMXN.ts
+│   │   ├── PrepaidCard.ts
+│   │   └── RemittanceTransaction.ts
+│   │
+│   ├── value-objects/
+│   │   ├── Folio.ts
+│   │   ├── Money.ts
+│   │   ├── Rate.ts
+│   │   └── Email.ts
+│   │
+│   ├── enums/
+│   │   ├── FundingStatus.ts
+│   │   ├── SpendStatus.ts
+│   │   ├── SpendChannel.ts
+│   │   └── SystemRole.ts
+│   │
+│   ├── exceptions/
+│   │   ├── InsufficientBalanceException.ts
+│   │   ├── KycNotVerifiedException.ts
+│   │   └── InvalidStateException.ts
+│   │
+│   └── repositories/             # Interfaces (Ports)
+│       ├── ICustomerRepository.ts
+│       ├── ISystemUserRepository.ts
+│       ├── ICashierUserRepository.ts
+│       ├── IFundingRepository.ts
+│       ├── IWalletRepository.ts
+│       └── ISpendRepository.ts
+│
+├── application/                  # Use Cases
+│   ├── dtos/
+│   │   ├── auth/
+│   │   ├── funding/
+│   │   ├── wallet/
+│   │   └── spend/
+│   │
+│   └── use-cases/
+│       ├── auth/
+│       │   ├── GoogleLoginUseCase.ts
+│       │   ├── AdminLoginUseCase.ts
+│       │   └── CashierLoginUseCase.ts
+│       ├── funding/
+│       │   ├── CreateFundingEventUseCase.ts
+│       │   └── ConfirmFundingUseCase.ts
+│       ├── wallet/
+│       │   └── GetWalletBalanceUseCase.ts
+│       └── spend/
+│           └── CreateSpendUseCase.ts
+│
+├── infrastructure/               # Implementaciones concretas
+│   ├── persistence/              # Repositorios con SQL directo
+│   │   ├── CustomerRepository.ts
+│   │   ├── SystemUserRepository.ts
+│   │   ├── CashierUserRepository.ts
+│   │   ├── FundingRepository.ts
+│   │   └── WalletRepository.ts
+│   │
+│   ├── external/
+│   │   ├── GoogleAuthService.ts
+│   │   ├── MultiplicaService.ts
+│   │   └── StripeService.ts
+│   │
+│   └── audit/
+│       └── AuditService.ts
+│
+└── interfaces/                   # Controladores HTTP
+    ├── controllers/
+    │   ├── AuthController.ts
+    │   ├── FundingController.ts
+    │   ├── WalletController.ts
+    │   └── SpendController.ts
+    │
+    └── dtos/                     # DTOs de entrada/salida HTTP
+        ├── LoginRequest.ts
+        └── CreateFundingRequest.ts

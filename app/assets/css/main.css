@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #a3c9ff;
+  --color-on-primary: #00315e;
+  --color-primary-container: #004882;
+  --color-on-primary-container: #d3e4ff;
+  --color-secondary: #b6c4ff;
+  --color-on-secondary: #152e71;
+  --color-secondary-container: #2c4289;
+  --color-on-secondary-container: #dce1ff;
+  --color-tertiary: #8cceff;
+  --color-on-tertiary: #00344f;
+  --color-tertiary-container: #004b6f;
+  --color-on-tertiary-container: #cae6ff;
+  --color-background: #020617;
+  --color-surface: #020617;
+  --color-on-background: #e2e2e2;
+  --color-on-surface: #e2e2e2;
+  --color-surface-container-lowest: #090f14;
+  --color-surface-container-low: #1b1b1b;
+  --color-surface-container: #1e2225;
+  --color-surface-container-high: #252a2e;
+  --color-surface-container-highest: #333537;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  --font-family-headline: "Manrope", system-ui, sans-serif;
+  --font-family-body: "Inter", system-ui, sans-serif;
+  --font-family-label: "Inter", system-ui, sans-serif;
+
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;   /* approx full */
+}
+
+.mesh-bg {
+  background-color: #020617;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(29, 78, 216, 0.1) 0px, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e293b' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.glow-effect {
+  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.3);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
