@@ -13,7 +13,15 @@ export default defineEventHandler(async (event) => {
     const authController = new AuthController(systemUserRepository)
     const result = await authController.adminLogin(validatedData)
 
-    // Set refresh token in httpOnly cookie
+    // Set tokens in cookies
+    console.log('Setting accessToken cookie:', result.accessToken.substring(0, 20) + '...')
+    setCookie(event, 'accessToken', result.accessToken, {
+      httpOnly: false, // Allow JS access
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60, // 15 minutes
+    })
+    console.log('Setting refreshToken cookie:', result.refreshToken.substring(0, 20) + '...')
     setCookie(event, 'refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -21,12 +29,11 @@ export default defineEventHandler(async (event) => {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 
-    // Return only access token and user data
+    // Return user data (token is in cookie)
     return {
       success: true,
       data: {
         user: result.user,
-        accessToken: result.accessToken,
       },
     }
   } catch (error) {

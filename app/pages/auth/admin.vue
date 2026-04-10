@@ -85,7 +85,12 @@ const handleSubmit = async () => {
       method: 'POST',
       body: form.value
     })
-    message.value = response.message || 'Login successful'
+    if (response.success) {
+      message.value = 'Login successful'
+      await navigateTo('/admin-dashboard')
+    } else {
+      message.value = response.message || 'Login failed'
+    }
   } catch (error) {
     message.value = 'Login failed'
     console.error(error)

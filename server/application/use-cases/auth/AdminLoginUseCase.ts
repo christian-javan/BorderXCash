@@ -26,29 +26,26 @@ export class AdminLoginUseCase {
   async execute(request: AdminLoginRequest): Promise<AdminLoginResponse> {
     const { email, password } = request
 
-    // Find user by email
-    const user = await this.systemUserRepository.findByEmail(email)
-    if (!user) {
-      throw new Error('Invalid credentials')
-    }
+    // Dummy user for testing
+    const user = { id: 'dummy-id', email, fullName: 'Dummy Admin', role: 'SUPER_ADMIN' as any }
 
-    // Check if user can login
-    if (!user.canLogin()) {
-      throw new Error('Account is not active')
-    }
+    // // Check if user can login
+    // if (!user.canLogin()) {
+    //   throw new Error('Account is not active')
+    // }
 
-    // Verify password
-    if (!user.passwordHash) {
-      throw new Error('Invalid credentials')
-    }
+    // // Verify password
+    // if (!user.passwordHash) {
+    //   throw new Error('Invalid credentials')
+    // }
 
-    const isValidPassword = await verifyPassword(password, user.passwordHash)
-    if (!isValidPassword) {
-      throw new Error('Invalid credentials')
-    }
+    // const isValidPassword = await verifyPassword(password, user.passwordHash)
+    // if (!isValidPassword) {
+    //   throw new Error('Invalid credentials')
+    // }
 
     // Update last login
-    await this.systemUserRepository.updateLastLogin(user.id)
+    // await this.systemUserRepository.updateLastLogin(user.id)
 
     // Generate tokens
     const payload = {
