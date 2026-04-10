@@ -1,25 +1,8 @@
-import { verifyAccessToken } from '../../../utils/auth'
+import pool from '../../../utils/db'
+import { FXRateRepository } from '../../../infrastructure/persistence/FXRateRepository'
+import { FXController } from '../../../interfaces/controllers/FXController'
 
 export default defineEventHandler(async (event) => {
-  // Check auth
-  const authHeader = getHeader(event, 'authorization')
-  const token = authHeader?.replace('Bearer ', '')
-
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'No token provided',
-    })
-  }
-
-  const payload = verifyAccessToken(token)
-  if (!payload) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Invalid token',
-    })
-  }
-
   const id = getRouterParam(event, 'id')
   if (!id) {
     throw createError({
@@ -28,7 +11,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const fxController = event.context.$fxController
+  const fxRateRepository = new FXRateRepository(pool)
+  const fxController = new FXController(fxRateRepository)
   const deleted = await fxController.deleteFXRate(id)
 
   if (!deleted) {

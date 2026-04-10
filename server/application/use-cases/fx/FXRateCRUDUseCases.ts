@@ -56,7 +56,7 @@ export class CreateFXRateUseCase {
       request.rateTier1,
       request.rateTier2,
       request.rateTier3,
-      request.updatedById,
+      request.updatedById || undefined,
       request.validFrom ? new Date(request.validFrom) : undefined,
       request.validUntil ? new Date(request.validUntil) : undefined,
       request.notes

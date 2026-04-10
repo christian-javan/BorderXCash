@@ -54,8 +54,6 @@ export class FXRateRepository implements IFXRateRepository {
     const query = `
       SELECT id, rate_standard, rate_tier1, rate_tier2, rate_tier3, valid_from, valid_until, updated_by_id, notes, created_at
       FROM fx_rates
-      WHERE (valid_from IS NULL OR valid_from <= NOW())
-        AND (valid_until IS NULL OR valid_until >= NOW())
       ORDER BY created_at DESC
       LIMIT 1
     `

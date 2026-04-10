@@ -115,6 +115,24 @@ const amountMXN = computed(() => {
 const swapCurrencies = () => {
   alert('Intercambio de monedas (próximamente)')
 }
+
+// Fetch current FX rate
+const fetchCurrentRate = async () => {
+  try {
+    const response = await $fetch('/api/fx/current')
+    if (response.success && response.data) {
+      console.log('Current FX rate fetched:', response.data)
+      exchangeRate.value = response.data.rateStandard
+    }
+  } catch (error) {
+    console.error('Error fetching FX rate:', error)
+    exchangeRate.value = 3940 // fallback
+  }
+}
+
+onMounted(() => {
+  fetchCurrentRate()
+})
 </script>
 
 <style scoped>
