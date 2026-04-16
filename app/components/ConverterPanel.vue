@@ -11,9 +11,9 @@
           </div>
           <span class="currency-chevron"><Icon name="ph:caret-down-bold" /></span>
         </div>
-        <div class="amount-input-wrap">
-          <input class="amount-input" type="number" value="100.00" step="0.01" min="0">
-        </div>
+          <div class="amount-input-wrap">
+            <input class="amount-input" type="number" v-model.number="amountFrom" step="0.01" min="0">
+          </div>
         <div class="balance-label">Saldo: 1,250.00 USD</div>
       </div>
 
@@ -32,7 +32,7 @@
           </div>
           <span class="currency-chevron"><Icon name="ph:caret-down-bold" /></span>
         </div>
-        <div class="amount-output">1,689.74</div>
+          <div class="amount-output">{{ amountTo }}</div>
         <div class="balance-label">Saldo: 0.00 MXN</div>
       </div>
     </div>
@@ -55,7 +55,12 @@
 </template>
 
 <script setup>
-// Component logic if needed
+import { ref, computed } from 'vue'
+
+const rate = 16.8974
+const amountFrom = ref(100.00)
+
+const amountTo = computed(() => (amountFrom.value * rate).toFixed(2))
 </script>
 
 <style scoped>
