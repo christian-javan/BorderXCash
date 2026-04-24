@@ -45,22 +45,33 @@
           <span class="rate-unit">1</span>
           <span class="rate-currency">USD</span>
           <span class="rate-equals">=</span>
-          <span class="rate-value-emphasis">16.8974</span>
+          <span class="rate-value-emphasis">{{ rate }}</span>
           <span class="rate-currency-small">MXN</span>
           <span class="rate-change-pos">+0.23% <Icon name="ph:caret-up-bold" /></span>
         </div>
       </div>
     </div>
+
+    <button class="btn-cambiar">CAMBIAR AHORA</button>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
-const rate = 16.8974
+const rate = ref(16.8974) // default fallback
 const amountFrom = ref(100.00)
 
-const amountTo = computed(() => (amountFrom.value * rate).toFixed(2))
+onMounted(async () => {
+  try {
+    const { data } = await $fetch('/api/fx/current')
+    rate.value = data.rateTier1 // use the correct property from API response
+  } catch (error) {
+    console.error('Error fetching current exchange rate:', error)
+  }
+})
+
+const amountTo = computed(() => (amountFrom.value * rate.value).toFixed(2))
 </script>
 
 <style scoped>
@@ -227,5 +238,26 @@ const amountTo = computed(() => (amountFrom.value * rate).toFixed(2))
   font-size: 16px; font-weight: 800; color: #00e676;
   margin-left: 14px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.btn-cambiar {
+  display: block; width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  background: linear-gradient(180deg, #33cc44 0%, #1a8a2a 100%);
+  border: 2px solid #44dd55;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px; font-weight: 800; letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,200,60,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: all 0.2s;
+  text-align: center;
+}
+.btn-cambiar:hover {
+  background: linear-gradient(180deg, #44dd55 0%, #25a035 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,220,80,0.5);
 }
 </style>
