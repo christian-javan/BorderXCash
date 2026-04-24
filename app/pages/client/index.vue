@@ -2,11 +2,17 @@
   <div class="client-content">
     <HeroBanner />
     <ConverterPanel />
+    <ExchangeFeatures />
     <BottomGrid />
   </div>
 </template>
 
 <script setup>
+import HeroBanner from '~/components/HeroBanner.vue'
+import ExchangeFeatures from '~/components/ExchangeFeatures.vue'
+import ConverterPanel from '~/components/ConverterPanel.vue'
+import BottomGrid from '~/components/BottomGrid.vue'
+
 definePageMeta({
   layout: 'homepage'
 })

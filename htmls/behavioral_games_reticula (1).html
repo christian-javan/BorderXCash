@@ -1,0 +1,503 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;600&display=swap');
+
+  :root {
+    --red: #D0021B;
+    --red-dim: rgba(208,2,27,0.12);
+    --red-glow: rgba(208,2,27,0.06);
+    --ink: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --hint: var(--color-text-tertiary);
+    --border: var(--color-border-tertiary);
+    --surface: var(--color-background-secondary);
+    --card: var(--color-background-primary);
+    --mono: 'IBM Plex Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  .bg-wrap {
+    padding: 2rem 0 3rem;
+    font-family: var(--display);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .game-card {
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .game-card:hover { border-color: var(--color-border-secondary); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .game-index {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    background: var(--red-dim);
+    border-radius: 4px;
+    padding: 3px 7px;
+    margin-top: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 4px;
+    line-height: 1.3;
+  }
+
+  .card-mechanic {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .card-body {
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 560px) {
+    .card-body { grid-template-columns: 1fr; }
+  }
+
+  .subsection-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 8px;
+  }
+
+  .description-text {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .mockup-wrap {
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .loss-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 12px;
+    background: var(--red-glow);
+    border: 0.5px solid var(--red);
+    border-radius: 8px;
+  }
+  .loss-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 0.1em;
+  }
+  .loss-amount {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--red);
+    line-height: 1;
+  }
+  .loss-sub {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .comparison-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+  }
+  .comp-label { font-size: 12px; color: var(--muted); }
+  .comp-val { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+  .comp-val.green { color: #1D9E75; }
+
+  .streak-grid {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .streak-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--hint);
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    flex-shrink: 0;
+  }
+  .streak-dot.active {
+    background: #1D9E75;
+    border-color: #1D9E75;
+    color: #fff;
+  }
+  .streak-dot.active::after { content: '✓'; font-size: 11px; }
+  .streak-dot.current {
+    border: 1.5px solid var(--red);
+    color: var(--red);
+    background: var(--red-glow);
+  }
+  .streak-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+  }
+  .streak-num {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .streak-txt { font-size: 11px; color: var(--muted); align-self: flex-end; margin-bottom: 2px; }
+
+  .meter-bar-wrap {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .meter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .meter-label { font-size: 12px; color: var(--muted); }
+  .meter-pct { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--ink); }
+  .meter-track {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--red);
+    transition: width 1s ease;
+  }
+
+  .tier-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+  }
+  .tier-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--hint);
+    flex-shrink: 0;
+  }
+  .tier-dot.done { background: #1D9E75; }
+  .tier-dot.partial { background: var(--red); }
+  .tier-name { font-size: 12px; color: var(--muted); flex: 1; }
+  .tier-val { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  .rules-outer {
+    margin-top: 2rem;
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .rules-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--surface);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+  @media (max-width: 560px) { .rules-grid { grid-template-columns: 1fr; } }
+
+  .rule-cell {
+    padding: 1rem 1.25rem;
+    border-right: 0.5px solid var(--border);
+  }
+  .rule-cell:last-child { border-right: none; }
+  .rule-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .rule-text {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .sci-callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 7px 10px;
+    background: var(--surface);
+    border-left: 2px solid var(--red);
+    border-radius: 0 6px 6px 0;
+  }
+  .sci-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    background: var(--red-dim);
+    color: var(--red);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .sci-text { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+</style>
+
+<div class="bg-wrap">
+  <div class="section-label">Retícula · Juegos conductuales · Especificación UX</div>
+
+  <!-- GAME 1 -->
+  <div class="game-card">
+    <div class="card-header">
+      <span class="game-index">J-01</span>
+      <div>
+        <p class="card-title">Contador de ventaja acumulada</p>
+        <p class="card-mechanic">Sesgo: aversión a pérdidas · Objetivo: aumentar frecuencia de cambio</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="subsection-label">Descripción funcional</div>
+        <p class="description-text">
+          Cada vez que el miembro NO convierte usando Retícula, el sistema calcula cuánto costó esa misma operación en el mercado libre (tipo de cambio ventanilla). La diferencia se acumula como "ventaja no capturada". La pantalla de inicio muestra ese contador de forma visible pero no intrusiva. No proyecta ganancias futuras — refleja pérdida concreta ya ocurrida.
+        </p>
+        <div class="sci-callout">
+          <span class="sci-tag">SCI · G06</span>
+          <span class="sci-text">Cada conversión activa un FXConversion que alimenta <code>sem_activas</code> en Score_Individual (w=0.20).</span>
+        </div>
+      </div>
+      <div>
+        <div class="subsection-label">Mockup de componente</div>
+        <div class="mockup-wrap">
+          <div class="loss-display">
+            <span class="loss-label">Esta semana dejaste en el mercado</span>
+            <span class="loss-amount" id="loss-counter">$0</span>
+            <span class="loss-sub">vs. tipo de cambio Retícula</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comp-label">Mercado (ventanilla)</span>
+            <span class="comp-val">$18.20 MXN/USD</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comp-label">Tu tipo Retícula</span>
+            <span class="comp-val green">$18.65 MXN/USD</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comp-label">Última conversión</span>
+            <span class="comp-val">lunes · $200 USD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME 2 -->
+  <div class="game-card">
+    <div class="card-header">
+      <span class="game-index">J-02</span>
+      <div>
+        <p class="card-title">Racha de semanas activas</p>
+        <p class="card-mechanic">Sesgo: costo de ruptura · Objetivo: consistencia semanal</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="subsection-label">Descripción funcional</div>
+        <p class="description-text">
+          Una racha de semanas con al menos una operación. No cuenta días — cuenta semanas cerradas. El mensaje central es simple: "Llevas N semanas seguidas." Si la semana cierra sin operación, la racha reinicia. No hay notificación push de recordatorio — el contador está visible al abrir la app, siempre disponible, nunca invasivo. La presión la genera la racha construida, no la app.
+        </p>
+        <div class="sci-callout">
+          <span class="sci-tag">SCI · Capa 1</span>
+          <span class="sci-text">La racha visible en la app es literalmente la variable <code>sem_activas</code> del Score_Individual del emisor.</span>
+        </div>
+      </div>
+      <div>
+        <div class="subsection-label">Mockup de componente</div>
+        <div class="mockup-wrap">
+          <div class="streak-stat">
+            <div>
+              <span class="streak-num" id="streak-n">6</span>
+              <span class="streak-txt"> semanas seguidas</span>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:var(--mono);font-size:10px;color:var(--hint);">mejor racha</div>
+              <div style="font-family:var(--mono);font-size:14px;color:var(--ink);">11 sem</div>
+            </div>
+          </div>
+          <div class="streak-grid" id="streak-grid"></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 2px">
+            <span style="font-size:11px;color:var(--hint);">S1 — semana actual</span>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--hint);">S8 →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME 3 -->
+  <div class="game-card">
+    <div class="card-header">
+      <span class="game-index">J-03</span>
+      <div>
+        <p class="card-title">Índice de membresía aprovechada</p>
+        <p class="card-mechanic">Sesgo: costo irrecuperable · Objetivo: retención y reducción de churn</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="subsection-label">Descripción funcional</div>
+        <p class="description-text">
+          El miembro ya pagó su membresía ($6, $9 o $12 USD). El sistema muestra qué porcentaje de ese valor ha "activado" durante el mes en curso, calculado sobre ahorro real acumulado vs. costo de membresía. No es culpa — es información. Un mes que cierre en 23% activa la disonancia cognitiva del costo irrecuperable sin necesidad de mensaje agresivo. Opera sobre retención, no sobre frecuencia de cambio.
+        </p>
+        <div class="sci-callout">
+          <span class="sci-tag">Retícula · Membership</span>
+          <span class="sci-text">El ratio de aprovechamiento se calcula sobre el objeto <code>MembershipCharge</code> activo del período.</span>
+        </div>
+      </div>
+      <div>
+        <div class="subsection-label">Mockup de componente</div>
+        <div class="mockup-wrap">
+          <div class="meter-bar-wrap">
+            <div class="meter-header">
+              <span class="meter-label">Membresía aprovechada este mes</span>
+              <span class="meter-pct" id="meter-val">62%</span>
+            </div>
+            <div class="meter-track">
+              <div class="meter-fill" id="meter-fill" style="width:62%"></div>
+            </div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-dot done"></div>
+            <span class="tier-name">Membresía mensual</span>
+            <span class="tier-val">$9.00 USD</span>
+          </div>
+          <div class="tier-row">
+            <div class="tier-dot done"></div>
+            <span class="tier-name">Ahorro acumulado</span>
+            <span class="tier-val" style="color:#1D9E75">$5.60 USD</span>
+          </div>
+          <div class="tier-row">
+            <div class="tier-dot partial"></div>
+            <span class="tier-name">Restante del mes</span>
+            <span class="tier-val">12 días</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGLAS GENERALES -->
+  <div class="rules-outer">
+    <div class="rules-header">Reglas de implementación — los tres juegos</div>
+    <div class="rules-grid">
+      <div class="rule-cell">
+        <div class="rule-title">Canal</div>
+        <p class="rule-text">Los tres widgets viven en la pantalla de inicio. Ninguno genera notificación push propia. La presión la crea el número visible, no la app persiguiendo al usuario.</p>
+      </div>
+      <div class="rule-cell">
+        <div class="rule-title">Tono</div>
+        <p class="rule-text">Informativo, nunca acusatorio. Sin frases como "¡No pierdas tu racha!" ni emojis de alarma. Los números hablan solos. El copy es neutro y descriptivo.</p>
+      </div>
+      <div class="rule-cell" style="border-right:none">
+        <div class="rule-title">Prioridad de desarrollo</div>
+        <p class="rule-text">J-02 primero — es la más liviana y su variable (sem_activas) ya existe en el schema. J-01 segundo — requiere comparador de tipo de cambio. J-03 tercero — requiere cálculo mensual de ahorro acumulado.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lossEl = document.getElementById('loss-counter');
+  let lossVal = 0;
+  const target = 47;
+  const step = () => {
+    lossVal = Math.min(lossVal + 3, target);
+    lossEl.textContent = '$' + lossVal + ' MXN';
+    if (lossVal < target) requestAnimationFrame(step);
+  };
+  setTimeout(() => requestAnimationFrame(step), 400);
+
+  const grid = document.getElementById('streak-grid');
+  const active = [true, true, true, true, true, true];
+  const weeks = 8;
+  for (let i = 0; i < weeks; i++) {
+    const d = document.createElement('div');
+    d.className = 'streak-dot';
+    if (i < active.length && active[i]) { d.className += ' active'; }
+    else if (i === active.length) { d.className += ' current'; d.textContent = '?'; }
+    grid.appendChild(d);
+  }
+
+  const fill = document.getElementById('meter-fill');
+  fill.style.width = '0%';
+  setTimeout(() => { fill.style.width = '62%'; }, 500);
+</script>
