@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center mesh-bg relative overflow-hidden">
+  <div class="min-h-screen flex items-center justify-center mesh-bg relative overflow-hidden p-4">
     <!-- Background glows -->
     <div class="absolute inset-0 z-0 opacity-30">
       <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px]"></div>
       <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
     </div>
 
-    <div class="max-w-md w-full mx-8 relative z-10">
+    <div class="max-w-md w-full mx-0 relative z-10">
       <div class="bg-slate-900/40 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/10 relative overflow-hidden glow-effect">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
 
@@ -87,7 +87,7 @@ const handleSubmit = async () => {
     })
     if (response.success) {
       message.value = 'Login successful'
-      await navigateTo('/admin-dashboard')
+      await navigateTo('/admin')
     } else {
       message.value = response.message || 'Login failed'
     }

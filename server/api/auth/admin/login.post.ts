@@ -7,6 +7,7 @@ import { AuthController } from '../../../interfaces/controllers/AuthController'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
+    console.log('Received login request with body:', body)
     const validatedData = AdminLoginSchema.parse(body) as AdminLoginDto
 
     const systemUserRepository = new SystemUserRepository(pool)

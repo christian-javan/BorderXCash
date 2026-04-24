@@ -29,7 +29,7 @@ export class AdminLoginUseCase {
     // Find user by email
     const user = await this.systemUserRepository.findByEmail(email)
     if (!user) {
-      throw new Error('Invalid credentials')
+      throw new Error('Invalid credentials 0')
     }
 
     // Check if user can login
@@ -39,12 +39,12 @@ export class AdminLoginUseCase {
 
     // Verify password
     if (!user.passwordHash) {
-      throw new Error('Invalid credentials')
+      throw new Error('Invalid credentials 1')
     }
 
     const isValidPassword = await verifyPassword(password, user.passwordHash)
     if (!isValidPassword) {
-      throw new Error('Invalid credentials')
+      throw new Error('Invalid credentials 2')
     }
 
     // Update last login

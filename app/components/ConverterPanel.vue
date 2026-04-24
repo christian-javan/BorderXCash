@@ -52,19 +52,31 @@
       </div>
     </div>
 
-    <button class="btn-cambiar">CAMBIAR AHORA</button>
+    <button class="btn-cambiar" @click="showModal = true">CAMBIAR AHORA</button>
+
+    <!-- Modal -->
+    <div v-if="showModal" class="modal-overlay" @click="showModal = false">
+      <div class="modal-content" @click.stop>
+        <h3>Confirmar Pago</h3>
+        <p>Monto USD: {{ amountFrom }}</p>
+        <p>Monto MXN: {{ amountTo }}</p>
+        <button @click="handlePayment">Pagar con Stripe</button>
+        <button @click="showModal = false">Cancelar</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
-const rate = ref(16.8974) // default fallback
+const rate = ref(0) // default fallback
 const amountFrom = ref(100.00)
+const showModal = ref(false)
 
 onMounted(async () => {
   try {
-    const { data } = await $fetch('/api/fx/current')
+    const {data} = await $fetch('/api/fx/current')
     rate.value = data.rateTier1 // use the correct property from API response
   } catch (error) {
     console.error('Error fetching current exchange rate:', error)
@@ -72,6 +84,25 @@ onMounted(async () => {
 })
 
 const amountTo = computed(() => (amountFrom.value * rate.value).toFixed(2))
+
+const handlePayment = async () => {
+  try {
+    await $fetch('/api/exchanges', {
+      method: 'POST',
+      body: {
+        amountUsd: amountFrom.value,
+        amountMxn: parseFloat(amountTo.value),
+        rate: rate.value,
+        customerId: '550e8400-e29b-41d4-a716-446655440000'
+      }
+    })
+    alert('Pago exitoso y transacción almacenada')
+    showModal.value = false
+  } catch (error) {
+    console.error('Error processing payment:', error)
+    alert('Error en el pago')
+  }
+}
 </script>
 
 <style scoped>
@@ -259,5 +290,50 @@ const amountTo = computed(() => (amountFrom.value * rate.value).toFixed(2))
   background: linear-gradient(180deg, #44dd55 0%, #25a035 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0,220,80,0.5);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #0d1a3a;
+  border: 2px solid #2354b5;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  color: #e8f4ff;
+}
+.modal-content h3 {
+  margin-bottom: 16px;
+  font-family: 'Orbitron', sans-serif;
+}
+.modal-content p {
+  margin: 8px 0;
+  font-family: 'Exo 2', sans-serif;
+}
+.modal-content button {
+  margin: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(180deg, #33cc44 0%, #1a8a2a 100%);
+  border: 2px solid #44dd55;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+}
+.modal-content button:hover {
+  background: linear-gradient(180deg, #44dd55 0%, #25a035 100%);
 }
 </style>

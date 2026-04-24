@@ -19,6 +19,16 @@
           </li>
           <li>
             <NuxtLink
+              to="/admin/transacciones"
+              class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors"
+              :class="{ 'bg-primary/10 text-primary': $route.path === '/admin/transacciones' }"
+            >
+              <Icon name="mdi:clipboard-list" size="20" />
+              Transacciones
+            </NuxtLink>
+          </li>
+          <li>
+            <NuxtLink
               to="/admin/fx-rates"
               class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors"
               :class="{ 'bg-primary/10 text-primary': $route.path === '/admin/fx-rates' }"
